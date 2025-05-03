@@ -1,7 +1,6 @@
 const db = require('../config/db');
 const Rol = require('./Rol'); // Relación con Rol
 
-// Función para obtener todos los usuarios
 const getUsuarios = () => {
     return new Promise((resolve, reject) => {
         db.query('SELECT * FROM usuarios', (err, results) => {
@@ -11,7 +10,6 @@ const getUsuarios = () => {
     });
 };
 
-// Función para obtener un usuario por ID
 const getUsuarioById = (id) => {
     return new Promise((resolve, reject) => {
         db.query('SELECT * FROM usuarios WHERE id_usuario = ?', [id], (err, results) => {
@@ -21,7 +19,6 @@ const getUsuarioById = (id) => {
     });
 };
 
-// Función para crear un usuario
 const createUsuario = (usuario) => {
     return new Promise((resolve, reject) => {
         const { nombre_usuario, correo, contraseña, contacto, id_rol } = usuario;

@@ -1,4 +1,3 @@
-// models/Imagen.js
 const { Model, DataTypes } = require('sequelize');
 const db = require('../db');
 
@@ -10,7 +9,6 @@ Imagen.init({
   id_propiedad: { type: DataTypes.INTEGER }
 }, { sequelize: db, modelName: 'imagen' });
 
-// Relación con la Propiedad
 Imagen.belongsTo(Propiedad, { foreignKey: 'id_propiedad' });
 
 module.exports = Imagen;

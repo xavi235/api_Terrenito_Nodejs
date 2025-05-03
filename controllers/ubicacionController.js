@@ -1,6 +1,5 @@
-const Ubicacion = require('../models/Ubicacion'); // Modelo de Ubicación
+const Ubicacion = require('../models/Ubicacion');
 
-// Obtener todas las ubicaciones
 const index = (req, res) => {
     Ubicacion.getUbicaciones()
         .then(ubicaciones => {
@@ -11,16 +10,13 @@ const index = (req, res) => {
         });
 };
 
-// Crear una nueva ubicación
 const store = (req, res) => {
     const { direccion_detallada, provincia } = req.body;
 
-    // Validar los datos de entrada
     if (!direccion_detallada || !provincia) {
         return res.status(400).json({ mensaje: 'La dirección detallada y la provincia son obligatorias' });
     }
 
-    // Crear la ubicación en la base de datos
     Ubicacion.createUbicacion({ direccion_detallada, provincia })
         .then((idUbicacion) => {
             res.status(201).json({ id_ubicacion: idUbicacion, direccion_detallada, provincia });
@@ -30,7 +26,6 @@ const store = (req, res) => {
         });
 };
 
-// Obtener una ubicación por ID
 const show = (req, res) => {
     const { id } = req.params;
 
@@ -46,12 +41,10 @@ const show = (req, res) => {
         });
 };
 
-// Actualizar una ubicación
 const update = (req, res) => {
     const { id } = req.params;
     const { direccion_detallada, provincia } = req.body;
 
-    // Validar los datos de entrada
     if (!direccion_detallada || !provincia) {
         return res.status(400).json({ mensaje: 'La dirección detallada y la provincia son obligatorias' });
     }
@@ -62,7 +55,6 @@ const update = (req, res) => {
                 return res.status(404).json({ mensaje: 'Ubicación no encontrada' });
             }
 
-            // Actualizar los datos
             ubicacion.direccion_detallada = direccion_detallada || ubicacion.direccion_detallada;
             ubicacion.provincia = provincia || ubicacion.provincia;
 
@@ -76,7 +68,6 @@ const update = (req, res) => {
         });
 };
 
-// Eliminar una ubicación
 const destroy = (req, res) => {
     const { id } = req.params;
 
@@ -86,11 +77,10 @@ const destroy = (req, res) => {
                 return res.status(404).json({ mensaje: 'Ubicación no encontrada' });
             }
 
-            // Eliminar la ubicación
             return Ubicacion.deleteUbicacion(id);
         })
         .then(() => {
-            res.status(204).send(); // No content
+            res.status(204).send();
         })
         .catch(err => {
             res.status(500).json({ mensaje: 'Error al eliminar la ubicación', error: err });

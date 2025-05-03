@@ -1,6 +1,5 @@
-const TipoPropiedad = require('../models/TipoPropiedad'); // Modelo de TipoPropiedad
+const TipoPropiedad = require('../models/TipoPropiedad');
 
-// Obtener todos los tipos de propiedad
 const index = (req, res) => {
     TipoPropiedad.getTipoPropiedades()
         .then(tipoPropiedades => {
@@ -11,16 +10,13 @@ const index = (req, res) => {
         });
 };
 
-// Crear un nuevo tipo de propiedad
 const store = (req, res) => {
     const { nombre } = req.body;
 
-    // Validar los datos de entrada
     if (!nombre) {
         return res.status(400).json({ mensaje: 'El nombre es obligatorio' });
     }
 
-    // Crear el tipo de propiedad en la base de datos
     TipoPropiedad.createTipoPropiedad({ nombre })
         .then((idTipoPropiedad) => {
             res.status(201).json({ id_tipo: idTipoPropiedad, nombre });
@@ -30,7 +26,6 @@ const store = (req, res) => {
         });
 };
 
-// Obtener un tipo de propiedad por ID
 const show = (req, res) => {
     const { id } = req.params;
 
@@ -45,13 +40,11 @@ const show = (req, res) => {
             res.status(500).json({ mensaje: 'Error al obtener el tipo de propiedad', error: err });
         });
 };
-
-// Actualizar un tipo de propiedad
+d
 const update = (req, res) => {
     const { id } = req.params;
     const { nombre } = req.body;
 
-    // Validar los datos de entrada
     if (!nombre) {
         return res.status(400).json({ mensaje: 'El nombre es obligatorio' });
     }
@@ -62,7 +55,6 @@ const update = (req, res) => {
                 return res.status(404).json({ mensaje: 'Tipo de propiedad no encontrado' });
             }
 
-            // Actualizar el nombre
             tipoPropiedad.nombre = nombre || tipoPropiedad.nombre;
 
             return TipoPropiedad.updateTipoPropiedad(id, tipoPropiedad);
@@ -75,7 +67,6 @@ const update = (req, res) => {
         });
 };
 
-// Eliminar un tipo de propiedad
 const destroy = (req, res) => {
     const { id } = req.params;
 
@@ -85,11 +76,10 @@ const destroy = (req, res) => {
                 return res.status(404).json({ mensaje: 'Tipo de propiedad no encontrado' });
             }
 
-            // Eliminar el tipo de propiedad
             return TipoPropiedad.deleteTipoPropiedad(id);
         })
         .then(() => {
-            res.status(204).send(); // No content
+            res.status(204).send();
         })
         .catch(err => {
             res.status(500).json({ mensaje: 'Error al eliminar el tipo de propiedad', error: err });

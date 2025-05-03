@@ -14,14 +14,13 @@ const storage = multer.diskStorage({
       cb(null, uniqueName);
     }
   });
-  
-// Rutas para manejar las propiedades
-router.get('/', propiedadesController.index); // Listar propiedades
-router.post('/', propiedadesController.store); // Crear propiedad
-router.get('/:id', propiedadesController.show); // Mostrar propiedad por ID
-router.get('/tipo/:nombre_tipo', propiedadesController.obtenerPorTipo); // Filtrar propiedades por tipo
-//router.put('/:id', propiedadesController.update); // Actualizar propiedad
-//router.delete('/:id', propiedadesController.destroy); // Desactivar propiedad
+
+router.get('/', propiedadesController.index);
+router.post('/', propiedadesController.store);
+router.get('/:id', propiedadesController.show);
+router.get('/tipo/:nombre_tipo', propiedadesController.obtenerPorTipo);
+//router.put('/:id', propiedadesController.update);
+//router.delete('/:id', propiedadesController.destroy);
 const upload = multer({ dest: 'storage/imagenes/' });
 
 

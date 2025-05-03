@@ -1,6 +1,5 @@
 const db = require('../config/db'); // Conexión a la base de datos
 
-// Obtener todos los roles
 const getRoles = () => {
     return new Promise((resolve, reject) => {
         db.query('SELECT * FROM rols', (err, results) => {
@@ -10,19 +9,17 @@ const getRoles = () => {
     });
 };
 
-// Crear un nuevo rol
 const createRol = (rol) => {
     return new Promise((resolve, reject) => {
         const { nombre, descripcion } = rol;
         db.query('INSERT INTO rols (nombre, descripcion) VALUES (?, ?)', 
             [nombre, descripcion], (err, results) => {
             if (err) return reject(err);
-            resolve(results.insertId); // Devuelve el id del rol creado
+            resolve(results.insertId);
         });
     });
 };
 
-// Obtener un rol por ID
 const getRolById = (id) => {
     return new Promise((resolve, reject) => {
         db.query('SELECT * FROM rols WHERE id_rol = ?', [id], (err, results) => {
@@ -32,7 +29,6 @@ const getRolById = (id) => {
     });
 };
 
-// Actualizar un rol
 const updateRol = (id, rol) => {
     return new Promise((resolve, reject) => {
         const { nombre, descripcion } = rol;
@@ -44,7 +40,6 @@ const updateRol = (id, rol) => {
     });
 };
 
-// Eliminar un rol
 const deleteRol = (id) => {
     return new Promise((resolve, reject) => {
         db.query('DELETE FROM rols WHERE id_rol = ?', [id], (err, results) => {

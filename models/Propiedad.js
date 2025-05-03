@@ -1,4 +1,3 @@
-// models/Propiedad.js
 const { Model, DataTypes } = require('sequelize');
 const db = require('../db');
 
@@ -19,7 +18,6 @@ Propiedad.init({
   id_tipo: { type: DataTypes.INTEGER },
 }, { sequelize: db, modelName: 'propiedad' });
 
-// Relaciones
 Propiedad.associate = models => {
   Propiedad.belongsTo(models.Usuario, { foreignKey: 'id_usuario' });
   Propiedad.belongsTo(models.Ubicacion, { foreignKey: 'id_ubicacion' });

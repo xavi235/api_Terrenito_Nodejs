@@ -1,6 +1,5 @@
-const db = require('../config/db'); // Conexión a la base de datos
+const db = require('../config/db');
 
-// Obtener todos los tipos de propiedad
 const getTipoPropiedades = () => {
     return new Promise((resolve, reject) => {
         db.query('SELECT * FROM tipo_propiedads', (err, results) => {
@@ -10,18 +9,16 @@ const getTipoPropiedades = () => {
     });
 };
 
-// Crear un nuevo tipo de propiedad
 const createTipoPropiedad = (tipoPropiedad) => {
     return new Promise((resolve, reject) => {
         const { nombre } = tipoPropiedad;
         db.query('INSERT INTO tipo_propiedads (nombre) VALUES (?)', [nombre], (err, results) => {
             if (err) return reject(err);
-            resolve(results.insertId); // Devuelve el id del tipo de propiedad creado
+            resolve(results.insertId);
         });
     });
 };
 
-// Obtener un tipo de propiedad por ID
 const getTipoPropiedadById = (id) => {
     return new Promise((resolve, reject) => {
         db.query('SELECT * FROM tipo_propiedads WHERE id_tipo = ?', [id], (err, results) => {
@@ -31,7 +28,6 @@ const getTipoPropiedadById = (id) => {
     });
 };
 
-// Actualizar un tipo de propiedad
 const updateTipoPropiedad = (id, tipoPropiedad) => {
     return new Promise((resolve, reject) => {
         const { nombre } = tipoPropiedad;
@@ -42,7 +38,6 @@ const updateTipoPropiedad = (id, tipoPropiedad) => {
     });
 };
 
-// Eliminar un tipo de propiedad
 const deleteTipoPropiedad = (id) => {
     return new Promise((resolve, reject) => {
         db.query('DELETE FROM tipo_propiedads WHERE id_tipo = ?', [id], (err, results) => {

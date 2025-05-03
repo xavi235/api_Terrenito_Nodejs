@@ -2,7 +2,6 @@ const db = require('../config/db');
 const multer = require('multer');
 const path = require('path');
 
-// Configuración de multer
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, 'storage/imagenes/');
@@ -16,7 +15,6 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-// 1. Obtener todas las propiedades
 exports.index = (req, res) => {
   const query = `
     SELECT 
@@ -82,7 +80,6 @@ exports.index = (req, res) => {
   });
 };
 
-// 2. Crear una nueva propiedad
 exports.store = [upload.array('imagenes'), (req, res) => {
   const { titulo, descripcion, tamano, precio_min, precio_max, zona, id_usuario, id_ubicacion, id_tipo } = req.body;
 
@@ -125,7 +122,6 @@ exports.store = [upload.array('imagenes'), (req, res) => {
   });
 }];
 
-// 3. Mostrar una propiedad por ID
 exports.show = (req, res) => {
   const id = req.params.id;
   const query = `
@@ -187,7 +183,6 @@ exports.show = (req, res) => {
   });
 };
 
-// 4. Obtener propiedades por tipo
 exports.obtenerPorTipo = (req, res) => {
   const nombre_tipo = req.params.nombre_tipo;
   const query = `

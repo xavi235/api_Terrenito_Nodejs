@@ -12,8 +12,6 @@ const index = async (req, res) => {
 const store = async (req, res) => {
     try {
         const { nombre_usuario, correo, contraseña, contacto, id_rol } = req.body;
-
-        // Aquí podrías agregar la validación de la contraseña (encriptarla con bcrypt, por ejemplo)
         
         const usuarioId = await Usuario.createUsuario({ nombre_usuario, correo, contraseña, contacto, id_rol });
         res.status(201).json({
