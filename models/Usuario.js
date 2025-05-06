@@ -19,6 +19,16 @@ const getUsuarioById = (id) => {
     });
 };
 
+const getUsuarioByCorreo = (correo) => {
+    return new Promise((resolve, reject) => {
+        db.query('SELECT * FROM usuarios WHERE correo = ?', [correo], (err, results) => {
+            if (err) return reject(err);
+            resolve(results[0]); // Devuelve un único usuario
+        });
+    });
+};
+
+
 const createUsuario = (usuario) => {
     return new Promise((resolve, reject) => {
         const { nombre_usuario, correo, contraseña, contacto, id_rol } = usuario;
@@ -33,5 +43,6 @@ const createUsuario = (usuario) => {
 module.exports = {
     getUsuarios,
     getUsuarioById,
-    createUsuario
+    createUsuario,
+    getUsuarioByCorreo
 };

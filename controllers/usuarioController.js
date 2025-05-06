@@ -1,4 +1,5 @@
 const Usuario = require('../models/Usuario');
+const bcrypt = require('bcrypt');
 
 const index = async (req, res) => {
     try {
@@ -12,8 +13,18 @@ const index = async (req, res) => {
 const store = async (req, res) => {
     try {
         const { nombre_usuario, correo, contraseña, contacto, id_rol } = req.body;
-        
-        const usuarioId = await Usuario.createUsuario({ nombre_usuario, correo, contraseña, contacto, id_rol });
+
+        // Encriptar la contraseña antes de guardarla
+        const hash = await bcrypt.hash(contraseña, 10);
+
+        const usuarioId = await Usuario.createUsuario({
+            nombre_usuario,
+            correo,
+            contraseña: hash, // ✅ se guarda la contraseña encriptada
+            contacto,
+            id_rol
+        });
+
         res.status(201).json({
             mensaje: 'Usuario creado correctamente',
             id_usuario: usuarioId
@@ -22,6 +33,7 @@ const store = async (req, res) => {
         res.status(500).json({ mensaje: 'Error al crear el usuario', error: err });
     }
 };
+
 
 const show = async (req, res) => {
     try {
@@ -64,11 +76,46 @@ const destroy = async (req, res) => {
         res.status(500).json({ mensaje: 'Error al eliminar el usuario', error: err });
     }
 };
+const login = async (req, res) => {
+    try {
+        const { correo, contraseña } = req.body;
+
+        if (!correo || !contraseña) {
+            return res.status(400).json({ mensaje: 'Correo y contraseña requeridos.' });
+        }
+
+        const usuario = await Usuario.getUsuarioByCorreo(correo);
+
+        if (!usuario) {
+            return res.status(404).json({ mensaje: 'Usuario no encontrado.' });
+        }
+
+        const coincide = await bcrypt.compare(contraseña, usuario.contraseña);
+
+        if (!coincide) {
+            return res.status(401).json({ mensaje: 'Contraseña incorrecta.' });
+        }
+
+        // Devuelve solo los datos necesarios
+        return res.json({
+            id_usuario: usuario.id_usuario,
+            nombre_usuario: usuario.nombre_usuario,
+            correo: usuario.correo,
+            contacto: usuario.contacto,
+            id_rol: usuario.id_rol
+        });
+
+    } catch (err) {
+        res.status(500).json({ mensaje: 'Error en el login', error: err });
+    }
+};
+
 
 module.exports = {
     index,
     store,
     show,
     update,
-    destroy
+    destroy,
+    login
 };
