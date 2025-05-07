@@ -82,18 +82,18 @@ exports.index = (req, res) => {
 };
 
 exports.store = [upload.array('imagenes'), (req, res) => {
-  const { titulo, descripcion, tamano, precio_min, precio_max, zona, id_usuario, id_ubicacion, id_tipo } = req.body;
+  const { titulo, descripcion, tamano, precio_min, precio_max, zona, Enlace_ubicacion, id_usuario, id_ubicacion, id_tipo } = req.body;
 
   if (!titulo || !descripcion || !precio_min || !precio_max || !zona || !id_usuario || !id_ubicacion || !id_tipo) {
     return res.status(400).json({ error: 'Faltan campos obligatorios' });
   }
 
   const insertPropiedadQuery = `
-    INSERT INTO propiedads (titulo, descripcion, tamano, precio_min, precio_max, zona, id_usuario, id_ubicacion, id_tipo)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO propiedads (titulo, descripcion, tamano, precio_min, precio_max, zona, Enlace_ubicacion, id_usuario, id_ubicacion, id_tipo)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
 
-  db.query(insertPropiedadQuery, [titulo, descripcion, tamano, precio_min, precio_max, zona, id_usuario, id_ubicacion, id_tipo], (err, results) => {
+  db.query(insertPropiedadQuery, [titulo, descripcion, tamano, precio_min, precio_max, zona, Enlace_ubicacion, id_usuario, id_ubicacion, id_tipo], (err, results) => {
     if (err) return res.status(500).json({ error: err.message });
 
     const propiedadId = results.insertId;
@@ -122,6 +122,7 @@ exports.store = [upload.array('imagenes'), (req, res) => {
       });
   });
 }];
+
 
 exports.show = (req, res) => {
   const id = req.params.id;
@@ -183,6 +184,74 @@ exports.show = (req, res) => {
     res.json(propiedad);
   });
 };
+
+exports.obtenerPorUsuario = (req, res) => {
+  const id_usuario = req.params.id_usuario;
+
+  const query = `
+    SELECT 
+      p.*,
+      u.id_usuario, u.nombre_usuario, u.correo, u.contacto,
+      i.id_imagen, i.ruta_imagen,
+      t.id_tipo, t.nombre AS tipo_nombre,
+      ub.id_ubicacion, ub.direccion_detallada, ub.provincia
+    FROM propiedads p
+    LEFT JOIN usuarios u ON p.id_usuario = u.id_usuario
+    LEFT JOIN imagenes i ON p.id_propiedad = i.id_propiedad
+    LEFT JOIN tipo_propiedads t ON p.id_tipo = t.id_tipo
+    LEFT JOIN ubicacions ub ON p.id_ubicacion = ub.id_ubicacion
+    WHERE p.estado = 1 AND p.id_usuario = ?
+    ORDER BY p.id_propiedad DESC
+  `;
+
+  db.query(query, [id_usuario], (err, results) => {
+    if (err) return res.status(500).json({ error: err.message });
+
+    const propiedadesMap = new Map();
+
+    results.forEach(row => {
+      if (!propiedadesMap.has(row.id_propiedad)) {
+        propiedadesMap.set(row.id_propiedad, {
+          id_propiedad: row.id_propiedad,
+          titulo: row.titulo,
+          descripcion: row.descripcion,
+          tamano: row.tamano,
+          precio_min: row.precio_min,
+          precio_max: row.precio_max,
+          zona: row.zona,
+          estado: row.estado,
+          Enlace_ubicacion: row.Enlace_ubicacion,
+          id_usuario: row.id_usuario,
+          id_ubicacion: row.id_ubicacion,
+          id_tipo: row.id_tipo,
+          created_at: row.created_at,
+          updated_at: row.updated_at,
+          imagenes: [],
+          usuario: {
+            nombre_usuario: row.nombre_usuario,
+            correo: row.correo
+          },
+          ubicacion: {
+            direccion_detallada: row.direccion_detallada,
+            provincia: row.provincia
+          },
+          tipo: {
+            nombre: row.tipo_nombre
+          }
+        });
+      }
+
+      if (row.ruta_imagen) {
+        propiedadesMap.get(row.id_propiedad).imagenes.push({
+          ruta_imagen: row.ruta_imagen
+        });
+      }
+    });
+
+    res.json(Array.from(propiedadesMap.values()));
+  });
+};
+
 
 exports.obtenerPorTipo = (req, res) => {
   const nombre_tipo = req.params.nombre_tipo;

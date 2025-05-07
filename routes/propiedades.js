@@ -23,6 +23,7 @@ router.get('/tipo/:nombre_tipo', propiedadesController.obtenerPorTipo);
 //router.put('/:id', propiedadesController.update);
 //router.delete('/:id', propiedadesController.destroy);
 const upload = multer({ dest: 'storage/imagenes/' });
+router.get('/usuario/:id_usuario', propiedadesController.obtenerPorUsuario);
 
 
 module.exports = router;
