@@ -14,13 +14,12 @@ const store = async (req, res) => {
     try {
         const { nombre_usuario, correo, contraseña, contacto, id_rol } = req.body;
 
-        // Encriptar la contraseña antes de guardarla
         const hash = await bcrypt.hash(contraseña, 10);
 
         const usuarioId = await Usuario.createUsuario({
             nombre_usuario,
             correo,
-            contraseña: hash, // ✅ se guarda la contraseña encriptada
+            contraseña: hash,
             contacto,
             id_rol
         });
@@ -95,8 +94,7 @@ const login = async (req, res) => {
         if (!coincide) {
             return res.status(401).json({ mensaje: 'Contraseña incorrecta.' });
         }
-
-        // Devuelve solo los datos necesarios
+        
         return res.json({
             id_usuario: usuario.id_usuario,
             nombre_usuario: usuario.nombre_usuario,
