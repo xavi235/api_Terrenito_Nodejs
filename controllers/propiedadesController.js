@@ -320,3 +320,16 @@ exports.obtenerPorTipo = (req, res) => {
     res.json(Object.values(propiedadesMap));
   });
 };
+
+exports.destroy = (req, res) => {
+  const id = req.params.id;
+  const query = 'UPDATE propiedads SET estado = 0 WHERE id_propiedad = ?';
+
+  db.query(query, [id], (err, results) => {
+    if (err) return res.status(500).json({ error: err.message });
+    if (results.affectedRows === 0) return res.status(404).json({ error: 'Propiedad no encontrada' });
+
+    res.json({ mensaje: 'Propiedad desactivada correctamente' });
+  });
+};
+
