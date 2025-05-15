@@ -333,3 +333,65 @@ exports.destroy = (req, res) => {
   });
 };
 
+exports.update = [upload.array('imagenes'), (req, res) => {
+  const id = req.params.id;
+  const {
+    titulo, descripcion, tamano, precio_min, precio_max,
+    zona, Enlace_ubicacion, id_usuario, id_ubicacion, id_tipo
+  } = req.body;
+
+  const updateQuery = `
+    UPDATE propiedads
+    SET titulo = ?, descripcion = ?, tamano = ?, precio_min = ?, precio_max = ?,
+        zona = ?, Enlace_ubicacion = ?, id_usuario = ?, id_ubicacion = ?, id_tipo = ?
+    WHERE id_propiedad = ?
+  `;
+
+  db.query(updateQuery, [
+    titulo, descripcion, tamano, precio_min, precio_max,
+    zona, Enlace_ubicacion, id_usuario, id_ubicacion, id_tipo, id
+  ], (err, results) => {
+    if (err) return res.status(500).json({ error: err.message });
+
+    if (!req.files || req.files.length === 0) {
+      return res.json({ mensaje: 'Propiedad actualizada correctamente' });
+    }
+
+    const getOldImagesQuery = 'SELECT ruta_imagen FROM imagenes WHERE id_propiedad = ?';
+    db.query(getOldImagesQuery, [id], (err, oldImages) => {
+      if (err) return res.status(500).json({ error: err.message });
+
+      const fs = require('fs');
+      oldImages.forEach(img => {
+        const filePath = path.join(__dirname, '..', 'storage', 'imagenes', path.basename(img.ruta_imagen));
+        if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+      });
+
+      const deleteOldImagesQuery = 'DELETE FROM imagenes WHERE id_propiedad = ?';
+      db.query(deleteOldImagesQuery, [id], (err) => {
+        if (err) return res.status(500).json({ error: err.message });
+
+        const insertPromises = req.files.map(file => {
+          const ruta_imagen = `${req.protocol}://${req.get('host')}/storage/imagenes/${file.filename}`;
+          const insertImageQuery = 'INSERT INTO imagenes (ruta_imagen, id_propiedad) VALUES (?, ?)';
+          return new Promise((resolve, reject) => {
+            db.query(insertImageQuery, [ruta_imagen, id], (err) => {
+              if (err) reject(err);
+              else resolve();
+            });
+          });
+        });
+
+        Promise.all(insertPromises)
+          .then(() => {
+            res.json({ mensaje: 'Propiedad e imágenes actualizadas correctamente' });
+          })
+          .catch(err => {
+            res.status(500).json({ error: err.message });
+          });
+      });
+    });
+  });
+}];
+
+

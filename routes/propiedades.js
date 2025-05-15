@@ -22,5 +22,7 @@ router.get('/:id', propiedadesController.show);
 router.get('/tipo/:nombre_tipo', propiedadesController.obtenerPorTipo);
 router.delete('/:id', propiedadesController.destroy);
 router.get('/usuario/:id_usuario', propiedadesController.obtenerPorUsuario);
+router.put('/:id', propiedadesController.update);
+
 
 module.exports = router;
