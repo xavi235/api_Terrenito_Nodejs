@@ -15,7 +15,6 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage: storage });
-
 exports.index = (req, res) => {
   const query = `
     SELECT 
@@ -58,7 +57,8 @@ exports.index = (req, res) => {
           imagenes: [],
           usuario: {
             nombre_usuario: row.nombre_usuario,
-            correo: row.correo
+            correo: row.correo,
+            contacto: row.contacto
           },
           ubicacion: {
             direccion_detallada: row.direccion_detallada,
@@ -124,11 +124,11 @@ exports.store = [upload.array('imagenes'), (req, res) => {
 }];
 
 
-exports.show = (req, res) => {
+exports.obtenerPropiedadPorId = (req, res) => {
   const id = req.params.id;
   const query = `
     SELECT p.*, 
-           u.nombre_usuario, u.correo, 
+           u.nombre_usuario, u.correo, u.contacto,
            i.ruta_imagen, 
            t.nombre AS tipo, 
            ub.direccion_detallada, ub.provincia
@@ -162,7 +162,8 @@ exports.show = (req, res) => {
       imagenes: [],
       usuario: {
         nombre_usuario: results[0].nombre_usuario,
-        correo: results[0].correo
+        correo: results[0].correo,
+        contacto: results[0].contacto
       },
       ubicacion: {
         direccion_detallada: results[0].direccion_detallada,
@@ -229,7 +230,8 @@ exports.obtenerPorUsuario = (req, res) => {
           imagenes: [],
           usuario: {
             nombre_usuario: row.nombre_usuario,
-            correo: row.correo
+            correo: row.correo,
+            contacto:row.contacto
           },
           ubicacion: {
             direccion_detallada: row.direccion_detallada,
@@ -251,7 +253,6 @@ exports.obtenerPorUsuario = (req, res) => {
     res.json(Array.from(propiedadesMap.values()));
   });
 };
-
 
 exports.obtenerPorTipo = (req, res) => {
   const nombre_tipo = req.params.nombre_tipo;
@@ -298,7 +299,8 @@ exports.obtenerPorTipo = (req, res) => {
           imagenes: [],
           usuario: {
             nombre_usuario: row.nombre_usuario,
-            correo: row.correo
+            correo: row.correo,
+            contacto: row.contacto
           },
           ubicacion: {
             direccion_detallada: row.direccion_detallada,
@@ -393,5 +395,11 @@ exports.update = [upload.array('imagenes'), (req, res) => {
     });
   });
 }];
+
+
+
+
+
+
 
 

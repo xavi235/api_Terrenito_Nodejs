@@ -3,6 +3,7 @@ const router = express.Router();
 const propiedadesController = require('../controllers/propiedadesController');
 const multer = require('multer');
 const path = require('path');
+
 const upload = multer({ dest: 'storage/imagenes/' });
 
 const storage = multer.diskStorage({
@@ -15,14 +16,12 @@ const storage = multer.diskStorage({
     }
 });
 
-
 router.get('/', propiedadesController.index);
 router.post('/', propiedadesController.store);
-router.get('/:id', propiedadesController.show);
 router.get('/tipo/:nombre_tipo', propiedadesController.obtenerPorTipo);
-router.delete('/:id', propiedadesController.destroy);
 router.get('/usuario/:id_usuario', propiedadesController.obtenerPorUsuario);
+router.get('/:id', propiedadesController.obtenerPropiedadPorId);                           
+router.delete('/:id', propiedadesController.destroy);
 router.put('/:id', propiedadesController.update);
-
 
 module.exports = router;
