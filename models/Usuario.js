@@ -3,18 +3,27 @@ const Rol = require('./Rol');
 
 const getUsuarios = () => {
     return new Promise((resolve, reject) => {
-        db.query('SELECT * FROM usuarios', (err, results) => {
+        const query = `
+            SELECT 
+                u.*, 
+                r.nombre , 
+                r.descripcion
+            FROM usuarios u
+            LEFT JOIN rols r ON u.id_rol = r.id_rol
+        `;
+        db.query(query, (err, results) => {
             if (err) return reject(err);
             resolve(results);
         });
     });
 };
 
+
 const getUsuarioById = (id) => {
     return new Promise((resolve, reject) => {
         db.query('SELECT * FROM usuarios WHERE id_usuario = ?', [id], (err, results) => {
             if (err) return reject(err);
-            resolve(results[0]); // Retorna el usuario encontrado
+            resolve(results[0]);
         });
     });
 };
@@ -23,7 +32,7 @@ const getUsuarioByCorreo = (correo) => {
     return new Promise((resolve, reject) => {
         db.query('SELECT * FROM usuarios WHERE correo = ?', [correo], (err, results) => {
             if (err) return reject(err);
-            resolve(results[0]); // Devuelve un único usuario
+            resolve(results[0]);
         });
     });
 };
