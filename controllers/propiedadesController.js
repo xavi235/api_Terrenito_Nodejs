@@ -19,12 +19,13 @@ exports.index = (req, res) => {
   const query = `
     SELECT 
       p.*,
-      u.id_usuario, u.nombre_usuario, u.correo, u.contacto,
+      u.id_usuario, u.nombre_usuario, u.correo, u.contacto, r.nombre AS nombre_rol, r.descripcion AS descripcion_rol,
       i.id_imagen, i.ruta_imagen,
       t.id_tipo, t.nombre AS tipo_nombre,
       ub.id_ubicacion, ub.direccion_detallada, ub.provincia
     FROM propiedads p
     LEFT JOIN usuarios u ON p.id_usuario = u.id_usuario
+    LEFT JOIN rols r ON u.id_rol = r.id_rol
     LEFT JOIN imagenes i ON p.id_propiedad = i.id_propiedad
     LEFT JOIN tipo_propiedads t ON p.id_tipo = t.id_tipo
     LEFT JOIN ubicacions ub ON p.id_ubicacion = ub.id_ubicacion
@@ -58,7 +59,11 @@ exports.index = (req, res) => {
           usuario: {
             nombre_usuario: row.nombre_usuario,
             correo: row.correo,
-            contacto: row.contacto
+            contacto: row.contacto,
+            rol: {
+              nombre: row.nombre_rol,
+              descripcion: row.descripcion_rol
+            },
           },
           ubicacion: {
             direccion_detallada: row.direccion_detallada,
@@ -122,7 +127,6 @@ exports.store = [upload.array('imagenes'), (req, res) => {
       });
   });
 }];
-
 
 exports.obtenerPropiedadPorId = (req, res) => {
   const id = req.params.id;
