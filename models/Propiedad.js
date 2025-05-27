@@ -10,7 +10,6 @@ Propiedad.init({
   tamano: { type: DataTypes.INTEGER },
   precio_min: { type: DataTypes.FLOAT },
   precio_max: { type: DataTypes.FLOAT },
-  zona: { type: DataTypes.STRING },
   estado: { type: DataTypes.INTEGER },
   Enlace_ubicacion: { type: DataTypes.STRING },
   id_usuario: { type: DataTypes.INTEGER },

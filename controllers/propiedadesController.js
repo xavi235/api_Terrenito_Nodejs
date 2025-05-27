@@ -47,7 +47,6 @@ exports.index = (req, res) => {
           tamano: row.tamano,
           precio_min: row.precio_min,
           precio_max: row.precio_max,
-          zona: row.zona,
           estado: row.estado,
           Enlace_ubicacion: row.Enlace_ubicacion,
           id_usuario: row.id_usuario,
@@ -87,18 +86,18 @@ exports.index = (req, res) => {
 };
 
 exports.store = [upload.array('imagenes'), (req, res) => {
-  const { titulo, descripcion, tamano, precio_min, precio_max, zona, Enlace_ubicacion, id_usuario, id_ubicacion, id_tipo } = req.body;
+  const { titulo, descripcion, tamano, precio_min, precio_max,Enlace_ubicacion, id_usuario, id_ubicacion, id_tipo } = req.body;
 
-  if (!titulo || !descripcion || !precio_min || !precio_max || !zona || !id_usuario || !id_ubicacion || !id_tipo) {
+  if (!titulo || !descripcion || !precio_min || !precio_max || !id_usuario || !id_ubicacion || !id_tipo) {
     return res.status(400).json({ error: 'Faltan campos obligatorios' });
   }
 
   const insertPropiedadQuery = `
-    INSERT INTO propiedads (titulo, descripcion, tamano, precio_min, precio_max, zona, Enlace_ubicacion, id_usuario, id_ubicacion, id_tipo)
+    INSERT INTO propiedads (titulo, descripcion, tamano, precio_min, precio_max, Enlace_ubicacion, id_usuario, id_ubicacion, id_tipo)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
 
-  db.query(insertPropiedadQuery, [titulo, descripcion, tamano, precio_min, precio_max, zona, Enlace_ubicacion, id_usuario, id_ubicacion, id_tipo], (err, results) => {
+  db.query(insertPropiedadQuery, [titulo, descripcion, tamano, precio_min, precio_max, Enlace_ubicacion, id_usuario, id_ubicacion, id_tipo], (err, results) => {
     if (err) return res.status(500).json({ error: err.message });
 
     const propiedadId = results.insertId;
@@ -155,7 +154,6 @@ exports.obtenerPropiedadPorId = (req, res) => {
       tamano: results[0].tamano,
       precio_min: results[0].precio_min,
       precio_max: results[0].precio_max,
-      zona: results[0].zona,
       estado: results[0].estado,
       Enlace_ubicacion: results[0].Enlace_ubicacion,
       id_usuario: results[0].id_usuario,
@@ -223,7 +221,6 @@ exports.obtenerPorUsuario = (req, res) => {
           tamano: row.tamano,
           precio_min: row.precio_min,
           precio_max: row.precio_max,
-          zona: row.zona,
           estado: row.estado,
           Enlace_ubicacion: row.Enlace_ubicacion,
           id_usuario: row.id_usuario,
@@ -292,7 +289,6 @@ exports.obtenerPorTipo = (req, res) => {
           tamano: row.tamano,
           precio_min: row.precio_min,
           precio_max: row.precio_max,
-          zona: row.zona,
           estado: row.estado,
           Enlace_ubicacion: row.Enlace_ubicacion,
           id_usuario: row.id_usuario,
@@ -342,20 +338,20 @@ exports.destroy = (req, res) => {
 exports.update = [upload.array('imagenes'), (req, res) => {
   const id = req.params.id;
   const {
-    titulo, descripcion, tamano, precio_min, precio_max,
-    zona, Enlace_ubicacion, id_usuario, id_ubicacion, id_tipo
+    titulo, descripcion, tamano, precio_min, precio_max, 
+    Enlace_ubicacion, id_usuario, id_ubicacion, id_tipo
   } = req.body;
 
   const updateQuery = `
     UPDATE propiedads
-    SET titulo = ?, descripcion = ?, tamano = ?, precio_min = ?, precio_max = ?,
-        zona = ?, Enlace_ubicacion = ?, id_usuario = ?, id_ubicacion = ?, id_tipo = ?
+    SET titulo = ?, descripcion = ?, tamano = ?, precio_min = ?, precio_max = ?, 
+    Enlace_ubicacion = ?, id_usuario = ?, id_ubicacion = ?, id_tipo = ?
     WHERE id_propiedad = ?
   `;
 
   db.query(updateQuery, [
-    titulo, descripcion, tamano, precio_min, precio_max,
-    zona, Enlace_ubicacion, id_usuario, id_ubicacion, id_tipo, id
+    titulo, descripcion, tamano, precio_min, precio_max, 
+    Enlace_ubicacion, id_usuario, id_ubicacion, id_tipo, id
   ], (err, results) => {
     if (err) return res.status(500).json({ error: err.message });
 
