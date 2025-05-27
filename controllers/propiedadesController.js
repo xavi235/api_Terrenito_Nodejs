@@ -94,7 +94,7 @@ exports.store = [upload.array('imagenes'), (req, res) => {
 
   const insertPropiedadQuery = `
     INSERT INTO propiedads (titulo, descripcion, tamano, precio_min, precio_max, Enlace_ubicacion, id_usuario, id_ubicacion, id_tipo)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
 
   db.query(insertPropiedadQuery, [titulo, descripcion, tamano, precio_min, precio_max, Enlace_ubicacion, id_usuario, id_ubicacion, id_tipo], (err, results) => {
